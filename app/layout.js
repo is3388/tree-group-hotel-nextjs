@@ -10,8 +10,8 @@ import Header from "./_components/Header";
 
 export const metadata = {
   title: {
-    template: "%s - Group Tree Hotel",
-    default: "Welcome - Group Tree Hotel",
+    template: "%s - Tree Group Hotel",
+    default: "Welcome - Tree Group Hotel",
   },
   description:
     "Luxurious cabin hotel, located in the heart of the Germany, surrounded by beautiful mountains and dark forests",
@@ -22,11 +22,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang='en'>
       <body
-        className={`${josefin.className} antialiased bg-primary-950 text-primary-100 min-h-screen flex flex-col`}
+        className={`${josefin.className} antialiased relative bg-primary-950 text-primary-100 min-h-screen flex flex-col`}
       >
         <Header />
-        <div className='flex-1 px-8 py-12 bg-blue-200'>
-          <main className='max-w-7xl bg-orange-500 mx-auto'>{children}</main>
+        <div className='flex-1 px-8 py-12'>
+          <main className='max-w-7xl mx-auto'>{children}</main>
         </div>
       </body>
     </html>

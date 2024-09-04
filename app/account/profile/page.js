@@ -1,6 +1,10 @@
 import SelectCountry from "@/app/_components/SelectCountry";
 import Image from "next/image";
 
+export const metadata = {
+  title: 'Update Profile'
+}
+
 export default function Page() {
   // CHANGE
   //const countryFlag = "pt.jpg";
@@ -41,6 +45,9 @@ export default function Page() {
             <Image
               src={countryFlag}
               alt="Country flag"
+              width={50}
+              height={50}
+              contain
               className="h-5 rounded-sm"
             />
           </div>

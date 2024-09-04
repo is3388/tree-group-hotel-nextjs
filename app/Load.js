@@ -2,6 +2,8 @@
 // this file activate streaming automatically from the server to the client
 // JS must be enabled for streaming
 
+import Spinner from "@/app/_components/Spinner";
+
 export default function Load() {
-  return <p>LOADING DATA ...</p>
+  return <Spinner />
 }

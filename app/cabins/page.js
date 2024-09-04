@@ -25,12 +25,15 @@ export default async function Page() {
   );
 } */
 
-  import CabinCard from "@/app/_components/CabinCard";
+import CabinCard from "@/app/_components/CabinCard";
+import { getCabins } from "@/app/_lib/data-service";
+import { revalidatePath } from "next/cache";
 
-  export default function Page() {
+  export default async function Page() {
     
-    const cabins = [];
-  
+    const cabins = await getCabins();
+    revalidatePath('/cabins')
+    
     return (
       <div>
         <h1 className="text-4xl mb-5 text-accent-400 font-medium">

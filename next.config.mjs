@@ -9,7 +9,8 @@ const nextConfig = {
         pathname: '/storage/v1/object/public/cabin-images/**'
       }
     ]
-  }
+  },
+  //output: 'export' // for deployment to static hosting if all pages are static - pregenerate on the server
 };
 
 export default nextConfig;

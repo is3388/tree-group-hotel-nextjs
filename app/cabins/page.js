@@ -29,6 +29,12 @@ import CabinList from '@/app/_components/CabinList';
 import { Suspense } from 'react';
 import Spinner from '@/app/_components/Spinner';
 
+// opt out data caching and full route caching to use incremental static regeneration on page level
+// to regenerate a static page but fetch data after the number of second specified which is still dynamic
+export const revalidate = 3600; // 60 min x 60 sec
+
+export const metadata = { title: 'Cabins'};
+
 export default async function Page() {
   return (
     <div>
@@ -43,6 +49,7 @@ export default async function Page() {
         home. The perfect spot for a peaceful, calm vacation. Welcome to
         paradise.
       </p>
+      {/* parital pre-rendering only CabinList is the dynamic part while the whole page is static */}
       <Suspense fallback={<Spinner />}><CabinList /></Suspense>
       
     </div>

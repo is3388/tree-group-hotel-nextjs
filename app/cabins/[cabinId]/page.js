@@ -2,12 +2,24 @@ import { getCabin } from '@/app/_lib/data-service';
 import { EyeSlashIcon, MapPinIcon, UsersIcon } from '@heroicons/react/24/solid';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
+import { getCabins } from '@/app/_lib/data-service';
 
 export async function generateMetadata({ params }) {
   const cabin = await getCabin(params.cabinId);
   if (!cabin) notFound();
   const { name } = cabin;
   return { title: `Cabin ${name}` };
+}
+
+// an alternative to pre-generate dynamic URL segment at build time instead of request time
+// export those pages as static pages and deploy to static hosting provider
+// if not too many values such as only 10 different cabinIds 
+// run npm run build to see those static pages build
+
+export async function generateStaticParams() {
+  const cabins = await getCabins()
+  const ids = cabins.map((cabin) => { cabinId: String(cabin.id)})
+  return ids
 }
 
 export default async function Page({ params }) {

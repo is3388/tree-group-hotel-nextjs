@@ -28,14 +28,19 @@ export default async function Page() {
 import CabinList from '@/app/_components/CabinList';
 import { Suspense } from 'react';
 import Spinner from '@/app/_components/Spinner';
+import Filter from '../_components/Filter';
 
 // opt out data caching and full route caching to use incremental static regeneration on page level
 // to regenerate a static page but fetch data after the number of second specified which is still dynamic
+// if using searchParams, the page will be dynamic. No need to revalidate the page
 export const revalidate = 3600; // 60 min x 60 sec
 
-export const metadata = { title: 'Cabins'};
+export const metadata = { title: 'Cabins' };
 
-export default async function Page() {
+export default async function Page({ searchParams }) {
+  // read data from URL in the server
+  // localhost:3000/cabins?capacity=small|medium|large|all as default
+  const filter = searchParams?.capactiy ?? 'all';
   return (
     <div>
       <h1 className='text-4xl mb-5 text-accent-400 font-medium'>
@@ -49,9 +54,17 @@ export default async function Page() {
         home. The perfect spot for a peaceful, calm vacation. Welcome to
         paradise.
       </p>
-      {/* parital pre-rendering only CabinList is the dynamic part while the whole page is static */}
-      <Suspense fallback={<Spinner />}><CabinList /></Suspense>
-      
+
+      <div className='flex justify-end'>
+        <Filter />
+      </div>
+
+      {/* parital pre-rendering only CabinList is the dynamic part while the whole page is static 
+       Adding a key forces React to re-render the component, ensuring the spinner or fallback content 
+       is displayed during the loading state when the URL changes.*/}
+      <Suspense fallback={<Spinner />} key={filter}>
+        <CabinList filter={filter} />
+      </Suspense>
     </div>
   );
 }

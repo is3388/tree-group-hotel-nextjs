@@ -3,6 +3,7 @@ import { EyeSlashIcon, MapPinIcon, UsersIcon } from '@heroicons/react/24/solid';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { getCabins } from '@/app/_lib/data-service';
+import TextExpander from '@/app/_components/TextExpander';
 
 export async function generateMetadata({ params }) {
   const cabin = await getCabin(params.cabinId);
@@ -13,13 +14,16 @@ export async function generateMetadata({ params }) {
 
 // an alternative to pre-generate dynamic URL segment at build time instead of request time
 // export those pages as static pages and deploy to static hosting provider
-// if not too many values such as only 10 different cabinIds 
+// if not too many values such as only 10 different cabinIds
 // run npm run build to see those static pages build
+// use this function and return the ids, so that this is static page
 
 export async function generateStaticParams() {
-  const cabins = await getCabins()
-  const ids = cabins.map((cabin) => { cabinId: String(cabin.id)})
-  return ids
+  const cabins = await getCabins();
+  const ids = cabins.map((cabin) => {
+    cabinId: String(cabin.id);
+  });
+  return ids;
 }
 
 export default async function Page({ params }) {
@@ -45,7 +49,9 @@ export default async function Page({ params }) {
             Cabin {name}
           </h3>
 
-          <p className='text-lg text-primary-300 mb-10'>{description}</p>
+          <p className='text-lg text-primary-300 mb-10'>
+            <TextExpander>{description}</TextExpander>
+          </p>
 
           <ul className='flex flex-col gap-4 mb-7'>
             <li className='flex gap-3 items-center'>

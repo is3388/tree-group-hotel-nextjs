@@ -36,11 +36,13 @@ import Filter from '../_components/Filter';
 export const revalidate = 3600; // 60 min x 60 sec
 
 export const metadata = { title: 'Cabins' };
-
-export default async function Page({ searchParams }) {
+// searchParams only available on page.js not in server component
+export default function Page({ searchParams }) {
+  console.log(searchParams)
   // read data from URL in the server
   // localhost:3000/cabins?capacity=small|medium|large|all as default
-  const filter = searchParams?.capactiy ?? 'all';
+  const filter = searchParams?.capacity ?? 'all';
+  
   return (
     <div>
       <h1 className='text-4xl mb-5 text-accent-400 font-medium'>
@@ -55,7 +57,7 @@ export default async function Page({ searchParams }) {
         paradise.
       </p>
 
-      <div className='flex justify-end'>
+      <div className='flex justify-end mb-8'>
         <Filter />
       </div>
 

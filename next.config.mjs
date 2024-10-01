@@ -8,7 +8,8 @@ const nextConfig = {
         port: '',
         pathname: '/storage/v1/object/public/cabin-images/**'
       }
-    ]
+    ],
+    // unoptimized: true, if high memory usage and slow compiling time
   },
   //output: 'export' // for deployment to static hosting if all pages are static - pregenerate on the server
 };

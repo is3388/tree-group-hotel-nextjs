@@ -4,7 +4,7 @@ import bg from '@/public/bg.png'; // not specify width and height to be more res
 
 export default function Page() {
   return (
-    <main className="mt-24">
+    <>
       <Image
         src={bg}
         fill
@@ -28,6 +28,6 @@ export default function Page() {
           Explore luxury cabins
         </Link>
       </div>
-      </main>
+  </>
   );
 }

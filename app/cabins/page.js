@@ -29,6 +29,7 @@ import CabinList from '@/app/_components/CabinList';
 import { Suspense } from 'react';
 import Spinner from '@/app/_components/Spinner';
 import Filter from '../_components/Filter';
+import ReservationReminder from '../_components/ReservationReminder';
 
 // opt out data caching and full route caching to use incremental static regeneration on page level
 // to regenerate a static page but fetch data after the number of second specified which is still dynamic
@@ -38,11 +39,11 @@ export const revalidate = 3600; // 60 min x 60 sec
 export const metadata = { title: 'Cabins' };
 // searchParams only available on page.js not in server component
 export default function Page({ searchParams }) {
-  console.log(searchParams)
+  console.log(searchParams);
   // read data from URL in the server
   // localhost:3000/cabins?capacity=small|medium|large|all as default
   const filter = searchParams?.capacity ?? 'all';
-  
+
   return (
     <div>
       <h1 className='text-4xl mb-5 text-accent-400 font-medium'>
@@ -66,6 +67,7 @@ export default function Page({ searchParams }) {
        is displayed during the loading state when the URL changes.*/}
       <Suspense fallback={<Spinner />} key={filter}>
         <CabinList filter={filter} />
+        <ReservationReminder />
       </Suspense>
     </div>
   );

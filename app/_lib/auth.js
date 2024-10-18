@@ -1,17 +1,33 @@
-import NextAuth from "next-auth";
+import NextAuth from 'next-auth';
 import Google from 'next-auth/providers/google';
 
 const authConfig = {
   providers: [
     Google({
       clientId: process.env.AUTH_GOOGLE_ID,
-      clientSecret: process.env.AUTH_GOOGLE_SECRET
-    })
+      clientSecret: process.env.AUTH_GOOGLE_SECRET,
+    }),
     // can have multiple providers such as Github, Facebook, Instagram, LinkedIn
-  ]
-}
+  ],
+  callbacks: {
+    // when user hit the /account route, authorized will be called
+    // if it is unauthorized, it auto redirects to signin page
+    authorized({ auth, request }) {
+      // auth is the current session
+      return !!auth?.user; // see if a user exists and turns into boolean T or F
+    },
+  },
+  pages: { // tell authentication go to custom page not the prebuilt page that only has Google signin logo
+    signIn: '/login'
+  }
+};
 
-export const { auth, handlers: { GET, POST } } = NextAuth(authConfig)
+export const { // auth for current session, signIn/signOut for handling user connects to Google buttons
+  auth,
+  signIn,
+  signOut,
+  handlers: { GET, POST },
+} = NextAuth(authConfig);
 
 /*  for your own credentials
 import NextAuth from "next-auth"

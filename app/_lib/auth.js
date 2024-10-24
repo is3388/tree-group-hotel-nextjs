@@ -1,5 +1,6 @@
 import NextAuth from 'next-auth';
 import Google from 'next-auth/providers/google';
+import { createGuest, getGuest } from './data-service';
 
 const authConfig = {
   providers: [
@@ -8,21 +9,42 @@ const authConfig = {
       clientSecret: process.env.AUTH_GOOGLE_SECRET,
     }),
     // can have multiple providers such as Github, Facebook, Instagram, LinkedIn
-  ],
+  ], // authentication flow: call authorized, then signIn, then session
   callbacks: {
-    // when user hit the /account route, authorized will be called
+    // when user hit the /account route, authorized will be called when user attempts to visit protected routes
     // if it is unauthorized, it auto redirects to signin page
     authorized({ auth, request }) {
       // auth is the current session
       return !!auth?.user; // see if a user exists and turns into boolean T or F
     },
+    async signIn({ user, account, profile }) {
+      // this will be triggered during sign in process
+      try {
+        const existingGuest = await getGuest(user.email);
+        if (!existingGuest) {
+          await createGuest({ email: user.email, fullName: user.name });
+        }
+        return true;
+      } catch {
+        return false;
+      }
+    },
+    async session({ session, user }) {
+      // in order to get the guest id in a central place for booking, reservation and guest profile page
+      // this will be run after each sign in and each time the session is created and checked out
+      const guest = await getGuest(session.user.email);
+      session.user.guestId = guest.id;
+      return session;
+    },
   },
-  pages: { // tell authentication go to custom page not the prebuilt page that only has Google signin logo
-    signIn: '/login'
-  }
+  pages: {
+    // tell authentication go to custom page not the prebuilt page that only has Google signin logo
+    signIn: '/login',
+  },
 };
 
-export const { // auth for current session, signIn/signOut for handling user connects to Google buttons
+export const {
+  // auth for current session, signIn/signOut for handling user connects to Google buttons
   auth,
   signIn,
   signOut,

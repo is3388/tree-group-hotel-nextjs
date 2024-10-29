@@ -35,3 +35,12 @@ export async function updateProfile(formData) {
   await updateGuest(session.user.guestId, updateData)
   revalidatePath('/account/profile') // data in cache will stay for 30 seconds by default, in order to avoid the stale data
 }
+
+export async function deleteReservation(bookingId) {
+  const session = await auth();
+  if (!session) {
+    throw new Error('You must log in')
+  }
+  await deleteBooking(bookingId);
+  revalidatePath('/account/reservations')
+}

@@ -84,7 +84,7 @@ export async function getBookings(guestId) {
     .from('bookings')
     // We actually also need data on the cabins as well. But let's ONLY take the data that we actually need, in order to reduce downloaded data.
     .select(
-      'id, created_at, startDate, endDate, numNights, numGuests, totalPrice, guestId, cabinId, cabins(name, image)'
+      'id, created_at, startDate, endDate, numOfNights, numOfGuests, totalPrice, guestId, cabinId, cabin(name, image)'
     )
     .eq('guestId', guestId)
     .order('startDate');
@@ -94,7 +94,7 @@ export async function getBookings(guestId) {
     throw new Error('Bookings could not get loaded');
   }
 
-  return data;
+ return data;
 }
 
 export async function getBookedDatesByCabinId(cabinId) {

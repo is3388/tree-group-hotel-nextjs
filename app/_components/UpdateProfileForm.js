@@ -3,7 +3,8 @@
 //import SelectCountry from "@/app/_components/SelectCountry";
 import Image from 'next/image';
 import { updateProfile } from '../_lib/actions';
-import { useFormStatus } from 'react-dom';
+//import { useFormStatus } from 'react-dom';
+import SubmitButton from './SubmitButton';
 
 export default function UpdateProfileForm({ guest, children }) {
   const { fullName, email, nationality, nationalID, countryFlag } = guest;
@@ -61,14 +62,15 @@ export default function UpdateProfileForm({ guest, children }) {
       </div>
 
       <div className='flex justify-end items-center gap-6'>
-        <Button />
+        <SubmitButton pendingLabel='updating...'>Update profile</SubmitButton>
       </div>
     </form>
   );
 }
+// the following code moves to SubmitButton component
 // useFormStatus is react-dom hook to show the form status on the button
 // it must be used in a component that is rendered inside the form
-function Button() {
+/*function Button() {
   const { pending } = useFormStatus();
   return (
     <button
@@ -78,4 +80,4 @@ function Button() {
       {pending ? 'Updating...' : 'Update profile'}
     </button>
   );
-}
+} */

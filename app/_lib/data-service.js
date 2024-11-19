@@ -94,7 +94,7 @@ export async function getBookings(guestId) {
     throw new Error('Bookings could not get loaded');
   }
 
- return data;
+  return data;
 }
 
 export async function getBookedDatesByCabinId(cabinId) {
@@ -107,7 +107,7 @@ export async function getBookedDatesByCabinId(cabinId) {
     .from('bookings')
     .select('*')
     .eq('cabinId', cabinId)
-    .or(`startDate.gte.${today},status.eq.checked-in`);
+    .or(`startDate.gte.${today}, status.eq.checked-in`);
 
   if (error) {
     console.error(error);
@@ -214,7 +214,7 @@ export async function updateBooking(id, updatedFields) {
     console.error(error);
     throw new Error('Booking could not be updated');
   }
- // return data;
+  // return data;
 }
 
 /////////////
@@ -228,5 +228,5 @@ export async function deleteBooking(id) {
     console.error(error);
     throw new Error('Booking could not be deleted');
   }
- // return data;
+  // return data;
 }

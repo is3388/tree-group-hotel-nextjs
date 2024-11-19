@@ -1,8 +1,42 @@
 'use client';
 
+import { formatISO, isValid, differenceInDays } from 'date-fns';
+import { useReservation } from './ReservationContext';
+import { createBooking } from '../_lib/actions';
+import SubmitButton from './SubmitButton';
+
 function ReservationForm({ cabin, user }) {
-  // CHANGE
-  const { maxCapacity } = cabin;
+  const { range, resetRange } = useReservation();
+  const { maxCapacity, regularPrice, discount, id } = cabin;
+  const isValidStartDate = range?.from && isValid(new Date(range.from));
+  const isValidEndDate = range?.to && isValid(new Date(range.to));
+  // prevent time zone issue
+  const startDate = isValidStartDate
+    ? formatISO(new Date(range.from), { representation: 'date' })
+    : null;
+  const endDate = isValidEndDate
+    ? formatISO(new Date(range.to), { representation: 'date' })
+    : null;
+  const numOfNights =
+    isValidStartDate && isValidEndDate
+      ? differenceInDays(new Date(endDate), new Date(startDate))
+      : 0;
+  const cabinPrice = numOfNights * (regularPrice - discount);
+
+  const bookingDetails = {
+    startDate,
+    endDate,
+    numOfNights,
+    cabinPrice,
+    cabinId: id,
+  };
+  // since there are more than one pc of info, cannot use hidden field and pass to server action
+  // use bind method - when you call it on a function, it set the disc keyword of that function
+  // plus pass additional arguments into the function
+  // first arg is the new value of the this keyword but we are not interested
+  // returns a new function with the data and stores that as a form action
+  // the second arg in bind will becomes the first arg in the createBooking function (action.js) which we pass to the form as server action
+  const createBookingWithData = createBooking.bind(null, bookingDetails);
 
   return (
     <div className='scale-[1.01]'>
@@ -18,15 +52,23 @@ function ReservationForm({ cabin, user }) {
             alt={user.name}
           />
           <p>{user.name}</p>
-        </div> 
+        </div>
       </div>
 
-      <form className='bg-primary-900 py-10 px-16 text-lg flex gap-5 flex-col'>
+      {/*<form className='bg-primary-900 py-10 px-16 text-lg flex gap-5 flex-col' action={createBookingWithData}>
+      or action={(formData) => createBooking(bookingData, formData)}*/}
+      <form
+        className='bg-primary-900 py-10 px-16 text-lg flex gap-5 flex-col'
+        action={async (formData) => {
+          await createBookingWithData(formData);
+          resetRange();
+        }}
+      >
         <div className='space-y-2'>
-          <label htmlFor='numGuests'>How many guests?</label>
+          <label htmlFor='numOfGuests'>How many guests?</label>
           <select
-            name='numGuests'
-            id='numGuests'
+            name='numOfGuests'
+            id='numOfGuests'
             className='px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm'
             required
           >
@@ -54,11 +96,15 @@ function ReservationForm({ cabin, user }) {
         </div>
 
         <div className='flex justify-end items-center gap-6'>
-          <p className='text-primary-300 text-base'>Start by selecting dates</p>
-
-          <button className='bg-accent-500 px-8 py-4 text-primary-800 font-semibold hover:bg-accent-600 transition-all disabled:cursor-not-allowed disabled:bg-gray-500 disabled:text-gray-300'>
-            Reserve now
-          </button>
+          {!(startDate && endDate) ? (
+            <p className='text-primary-300 text-base'>
+              Start by selecting dates
+            </p>
+          ) : (
+            <SubmitButton pendingLabel='Reserving ...'>
+              Reserve now
+            </SubmitButton>
+          )}
         </div>
       </form>
     </div>
